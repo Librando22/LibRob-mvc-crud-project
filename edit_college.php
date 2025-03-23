@@ -23,6 +23,32 @@ if (isset($_GET['id'])) {
     <title>Edit College</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+<style>
+    body {
+        background-color: #0a0a0a;
+        color: #00ffcc;
+        font-family: 'Orbitron', sans-serif;
+        text-align: center; }
+    .container {
+        border: 2px solid #00ffcc;
+        padding: 20px;
+        margin: 50px auto;
+        width: 80%;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 0 0 15px #00ffcc; }
+    button {
+        background: #00ffcc;
+        border: none;
+        padding: 10px;
+        font-size: 18px;
+        color: #0a0a0a;
+        cursor: pointer;
+        border-radius: 5px; }
+    button:hover {
+        background: #00cc99;
+        box-shadow: 0 0 10px #00cc99; }
+</style>
 <body>
     <div class="container mt-4">
         <h2>Edit College</h2>

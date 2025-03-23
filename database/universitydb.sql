@@ -1,0 +1,125 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Mar 23, 2025 at 04:04 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `universitydb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `college`
+--
+
+CREATE TABLE `college` (
+  `CollegeID` int(11) NOT NULL,
+  `CollegeName` varchar(255) DEFAULT NULL,
+  `CollegeCode` varchar(255) DEFAULT NULL,
+  `IsActive` bit(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `college`
+--
+
+INSERT INTO `college` (`CollegeID`, `CollegeName`, `CollegeCode`, `IsActive`) VALUES
+(1, 'University of Cebu', '09091212', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(2, 'University of Cebu', '09091212', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(3, 'University of Cebu', '09091212', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(4, 'University of Cebu', '09091212', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(5, 'University of Cebu Lapu-Lapu Mandaue', '10101', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(6, 'UCLM', '0987654321', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(7, 'UCLM', '1234567890', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(8, 'College of Nursing', 'CON', b'0000000000000000000000000000000000000000000000000000000000000001'),
+(9, 'College of Computer Studies', 'CCS', b'0000000000000000000000000000000000000000000000000000000000000000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `department`
+--
+
+CREATE TABLE `department` (
+  `DepartmentID` int(11) NOT NULL,
+  `CollegeID` int(11) NOT NULL,
+  `DepartmentName` varchar(255) DEFAULT NULL,
+  `DepartmentCode` varchar(255) DEFAULT NULL,
+  `IsActive` bit(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `department`
+--
+
+INSERT INTO `department` (`DepartmentID`, `CollegeID`, `DepartmentName`, `DepartmentCode`, `IsActive`) VALUES
+(1, 1, 'Computer Studies', '10101110', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(2, 2, 'Computer Studies', '10101110', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(3, 5, 'Computer Studies', '10101', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(4, 5, 'Marine Engineering', '50505', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(5, 6, 'Maritime', '0987654321', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(6, 6, 'CCS', '0987654321', b'0000000000000000000000000000000000000000000000000000000000000000'),
+(7, 9, 'Medicine', 'MED', b'0000000000000000000000000000000000000000000000000000000000000000');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `college`
+--
+ALTER TABLE `college`
+  ADD PRIMARY KEY (`CollegeID`);
+
+--
+-- Indexes for table `department`
+--
+ALTER TABLE `department`
+  ADD PRIMARY KEY (`DepartmentID`),
+  ADD KEY `CollegeID` (`CollegeID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `college`
+--
+ALTER TABLE `college`
+  MODIFY `CollegeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `department`
+--
+ALTER TABLE `department`
+  MODIFY `DepartmentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `department`
+--
+ALTER TABLE `department`
+  ADD CONSTRAINT `CollegeID` FOREIGN KEY (`CollegeID`) REFERENCES `college` (`CollegeID`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
