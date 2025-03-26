@@ -1,22 +1,40 @@
 <?php
-include 'db.php'; 
+include 'db_connection.php'; 
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $result = $conn->query("SELECT * FROM Department WHERE DepartmentID=$id");
-    $department = $result->fetch_assoc(); }
+    $departmentID = $_GET['id'];
 
-if (isset($_POST['update'])) {
-    $department_name = $_POST['department_name'];
-    $department_code = $_POST['department_code'];
-    $college_id = $_POST['college_id'];
+    $stmt = $conn->prepare("SELECT DepartmentName FROM departments WHERE DepartmentID = ?");
+    $stmt->bind_param("i", $departmentID);
+    $stmt->execute();
+    $stmt->bind_result($departmentName);
+    $stmt->fetch();
+    $stmt->close();
 
-    $update_query = "UPDATE Department SET DepartmentName='$department_name', DepartmentCode='$department_code', CollegeID='$college_id' WHERE DepartmentID=$id";
-    
-    if ($conn->query($update_query) === TRUE) {
-        echo "Department updated successfully!";
-    } else {
-        echo "Error: " . $conn->error; } }
+    if (!$departmentName) {
+        echo "<script>alert('Department not found.'); window.location.href='department_management.php';</script>";
+        exit;
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $newDepartmentName = $_POST['department_name'];
+
+        if (!empty($newDepartmentName)) {
+            $stmt = $conn->prepare("UPDATE departments SET DepartmentName = ? WHERE DepartmentID = ?");
+            $stmt->bind_param("si", $newDepartmentName, $departmentID);
+
+            if ($stmt->execute()) {
+                echo "<script>alert('Department updated successfully.'); window.location.href='department_management.php';</script>";
+            } else {
+                echo "<script>alert('Error updating department.'); window.history.back();</script>";
+            }
+
+            $stmt->close();
+        } else {
+            echo "<script>alert('Department name cannot be empty.');</script>";
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,32 +43,21 @@ if (isset($_POST['update'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Department</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+    <script>
+        function confirmUpdate() {
+            return confirm("Are you sure you want to save these changes?");
+        }
+    </script>
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="container">
         <h2>Edit Department</h2>
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">Department Name:</label>
-                <input type="text" name="department_name" value="<?php echo $department['DepartmentName']; ?>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Department Code:</label>
-                <input type="text" name="department_code" value="<?php echo $department['DepartmentCode']; ?>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">College:</label>
-                <select name="college_id" class="form-control" required>
-                    <?php
-                    $colleges = $conn->query("SELECT * FROM College WHERE IsActive=1");
-                    while ($row = $colleges->fetch_assoc()) {
-                        $selected = ($row['CollegeID'] == $department['CollegeID']) ? 'selected' : '';
-                        echo "<option value='" . $row['CollegeID'] . "' $selected>" . $row['CollegeName'] . "</option>"; }
-                    ?>
-                </select>
-            </div>
-            <button type="submit" name="update" class="btn btn-primary">Update Department</button>
+        <form method="POST" onsubmit="return confirmUpdate();">
+            <label for="department_name">Department Name:</label>
+            <input type="text" id="department_name" name="department_name" value="<?php echo htmlspecialchars($departmentName); ?>" required>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <a href="department_management.php" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>
