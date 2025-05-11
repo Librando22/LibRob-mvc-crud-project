@@ -10,8 +10,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: universitydb
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up PHP
@@ -20,7 +30,10 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, pdo, mysqli
 
-      - name: Run Basic PHP Tests
+      - name: Wait for MySQL to initialize
+        run: sleep 20
+
+      - name: Run PHP Tests
         run: |
           php -l index.php
           php tests/basic_smoke_test.php
