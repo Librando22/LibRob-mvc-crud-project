@@ -1,0 +1,26 @@
+name: PHP Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: ⚙️ Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo, mysqli
+
+      - name: 🧪 Run Basic PHP Tests
+        run: |
+          php -l index.php
+          php tests/basic_smoke_test.php
