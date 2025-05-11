@@ -18,10 +18,14 @@ jobs:
           MYSQL_DATABASE: universitydb
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=root" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up PHP
@@ -30,12 +34,11 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, pdo, mysqli
 
-      - name: Wait for MySQL to become ready
+      - name: Wait for MySQL
         run: |
-          echo "Waiting for MySQL to be ready..."
           for i in {1..10}; do
-            mysqladmin ping -h 127.0.0.1 -u root --password=root && break
-            echo "Waiting ($i)..."
+            mysqladmin ping -h 127.0.0.1 -u root -proot && break
+            echo " Waiting for MySQL ($i)..."
             sleep 5
           done
 
