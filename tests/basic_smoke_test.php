@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/UniversityApp/db_connection.php';
+require_once __DIR__ . 'tests/UniversityApp/db_connection.php';
 
 $result = $conn->query("SELECT 1");
 
