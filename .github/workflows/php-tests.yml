@@ -18,7 +18,7 @@ jobs:
           MYSQL_DATABASE: universitydb
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=root" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -30,10 +30,21 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, pdo, mysqli
 
-      - name: Wait for MySQL to initialize
-        run: sleep 20
+      - name: Wait for MySQL to become ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..10}; do
+            mysqladmin ping -h 127.0.0.1 -u root --password=root && break
+            echo "Waiting ($i)..."
+            sleep 5
+          done
 
       - name: Run PHP Tests
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_PASS: root
+          DB_NAME: universitydb
         run: |
           php -l index.php
           php tests/basic_smoke_test.php
